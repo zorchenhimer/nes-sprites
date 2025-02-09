@@ -16,6 +16,15 @@ nes2end
 ;CoordY .byte
 ;.endstruct
 
+BUTTON_A        = 1 << 7
+BUTTON_B        = 1 << 6
+BUTTON_SELECT   = 1 << 5
+BUTTON_START    = 1 << 4
+BUTTON_UP       = 1 << 3
+BUTTON_DOWN     = 1 << 2
+BUTTON_LEFT     = 1 << 1
+BUTTON_RIGHT    = 1 << 0
+
 .segment "ZEROPAGE"
 Sleeping: .res 1
 AddressPointer1: .res 2
@@ -187,6 +196,39 @@ RESET:
     lda #30
     sta LoadedSprites_CoordY, x
 
+    lda SpriteList+0
+    sta AddressPointer1+0
+    lda SpriteList+1
+    sta AddressPointer1+1
+    jsr LoadObject
+
+    lda #10
+    sta LoadedSprites_CoordX, x
+    lda #30
+    sta LoadedSprites_CoordY, x
+
+    lda SpriteList+0
+    sta AddressPointer1+0
+    lda SpriteList+1
+    sta AddressPointer1+1
+    jsr LoadObject
+
+    lda #10
+    sta LoadedSprites_CoordX, x
+    lda #30
+    sta LoadedSprites_CoordY, x
+
+    lda SpriteList+0
+    sta AddressPointer1+0
+    lda SpriteList+1
+    sta AddressPointer1+1
+    jsr LoadObject
+
+    lda #10
+    sta LoadedSprites_CoordX, x
+    lda #30
+    sta LoadedSprites_CoordY, x
+
     lda SpriteList+2
     sta AddressPointer1+0
     lda SpriteList+3
@@ -223,7 +265,35 @@ RESET:
 Frame:
     jsr ReadControllers
 
+    lda #BUTTON_UP
+    and Controller
+    beq :+
+    dec LoadedSprites_CoordY
+:
+
+    lda #BUTTON_DOWN
+    and Controller
+    beq :+
+    inc LoadedSprites_CoordY
+:
+
+    lda #BUTTON_LEFT
+    and Controller
+    beq :+
+    dec LoadedSprites_CoordX
+:
+
+    lda #BUTTON_RIGHT
+    and Controller
+    beq :+
+    inc LoadedSprites_CoordX
+:
+
+    lda #%1001_1110
+    sta $2001
     jsr UpdateObjects
+    lda #%0001_1110
+    sta $2001
     jsr WaitForNMI
     jmp Frame
 

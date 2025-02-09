@@ -3,22 +3,57 @@
 
 .segment "BSS"
 
-LoadedSprites_Lo: .res 8
-LoadedSprites_Hi: .res 8
+OBJ_COUNT = 8
 
-LoadedSprites_CoordX: .res 8
-LoadedSprites_CoordY: .res 8
+LoadedSprites_Lo: .res OBJ_COUNT
+LoadedSprites_Hi: .res OBJ_COUNT
+
+LoadedSprites_CoordX: .res OBJ_COUNT
+LoadedSprites_CoordY: .res OBJ_COUNT
+
+SpriteOffset: .res 1
+LoadedSpriteCount: .res 1
 
 .popseg
 
 UpdateObjects:
+    ;clc
     lda #.lobyte(SpritesA)
+    ;adc SpriteOffset
     sta AddressPointer2+0
+
     lda #.hibyte(SpritesA)
     sta AddressPointer2+1
 
-    ldx #0
-    ;ldy #0
+    lda #64
+    sta TmpY ; total sprites
+
+    ;lda #OBJ_COUNT
+    ;sta TmpZ
+
+    ; find how many are loaded
+    ldy #0
+:   lda LoadedSprites_Hi, y
+    beq :+
+    iny
+    cpy #OBJ_COUNT
+    bne :-
+:
+    sty LoadedSpriteCount
+    sty TmpZ
+
+    ldx SpriteOffset
+    lda FrameCount
+    and #$01
+    bne @loopObj
+
+    inc SpriteOffset
+    lda SpriteOffset
+    cmp LoadedSpriteCount
+    bcc @loopObj
+    lda #0
+    sta SpriteOffset
+
 @loopObj:
     lda LoadedSprites_Lo, x
     sta AddressPointer1+0
@@ -58,6 +93,8 @@ UpdateObjects:
     ldy #SpriteData::CoordY
     sta (AddressPointer2), y
 
+    dec TmpY
+
     dec TmpX
     beq @nextObj
 
@@ -82,29 +119,31 @@ UpdateObjects:
     adc #.sizeof(SpriteData)
     sta AddressPointer2+0
 
-    lda AddressPointer2+1
-    adc #0
-    sta AddressPointer2+1
-
 @justNext:
     inx
-    cpx #.sizeof(LoadedSprites_Hi)
+    ;cpx #OBJ_COUNT
+    cpx LoadedSpriteCount
+    bne :+
+    ldx #0
+:
+    dec TmpZ
     beq @done
     jmp @loopObj
 @done:
 
     ldy #0
-@clearLoop:
-    lda AddressPointer2+0
+    lda TmpY
     beq :+
-
+    bmi :+
+@clearLoop:
     lda #$FF
     sta (AddressPointer2), y
     clc
     lda AddressPointer2+0
     adc #.sizeof(SpriteData)
     sta AddressPointer2+0
-    bcs :+
+    dec TmpY
+    beq :+
     jmp @clearLoop
 :
 
