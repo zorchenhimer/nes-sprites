@@ -1,5 +1,8 @@
 .pushseg
-.segment "zeropage"
+.segment "ZEROPAGE"
+
+CoordX: .res 1
+CoordY: .res 1
 
 .segment "BSS"
 
@@ -24,6 +27,8 @@ UpdateObjects:
 
     lda #.hibyte(SpritesA)
     sta AddressPointer2+1
+    lda #0
+    sta TmpA
 
     lda #64
     sta TmpY ; total sprites
@@ -65,32 +70,35 @@ UpdateObjects:
     lda (AddressPointer1), y
     sta TmpX
 
+    lda LoadedSprites_CoordX, x
+    sta CoordX
+    lda LoadedSprites_CoordY, x
+    sta CoordY
+
+    ;ldx TmpA
+
     inc AddressPointer1+0
     bne @loopData
     inc AddressPointer1+1
 @loopData:
-    ldy #ObjectData::Tile
-    lda (AddressPointer1), y
-    ldy #SpriteData::Tile
-    sta (AddressPointer2), y
-
-    ldy #ObjectData::Attr
-    lda (AddressPointer1), y
-    ldy #SpriteData::Attr
-    sta (AddressPointer2), y
-
+    ldy #0
     clc
-    ldy #ObjectData::OffsetX
     lda (AddressPointer1), y
-    adc LoadedSprites_CoordX, x
-    ldy #SpriteData::CoordX
+    adc CoordY
     sta (AddressPointer2), y
 
-    clc
-    ldy #ObjectData::OffsetY
+    iny
     lda (AddressPointer1), y
-    adc LoadedSprites_CoordY, x
-    ldy #SpriteData::CoordY
+    sta (AddressPointer2), y
+
+    iny
+    lda (AddressPointer1), y
+    sta (AddressPointer2), y
+
+    iny
+    clc
+    lda (AddressPointer1), y
+    adc CoordX
     sta (AddressPointer2), y
 
     dec TmpY
@@ -147,7 +155,10 @@ UpdateObjects:
     jmp @clearLoop
 :
 
-    jmp CopyRevSprites
+    lda #%0101_1110
+    sta $2001
+    ;jmp CopyRevSprites
+    jmp CopyRevSprites_Unrolled
     rts
 
 CopyRevSprites:
@@ -168,6 +179,15 @@ CopyRevSprites:
     cpx #0
     bne @loop
 
+    rts
+
+CopyRevSprites_Unrolled:
+    .repeat 64, i
+        .repeat 4, j
+            lda SpritesA+j+(i*4)
+            sta SpritesB+j+((63-i)*4)
+        .endrepeat
+    .endrepeat
     rts
 
 ; A or B selected with value in X

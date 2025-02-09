@@ -10,10 +10,10 @@ Sp_FlipHoriz = %0100_0000
 Sp_FlipVert  = %1000_0000
 
 .struct ObjectData
-Tile    .byte
-OffsetX .byte
 OffsetY .byte
+Tile    .byte
 Attr    .byte
+OffsetX .byte
 .endstruct
 
 .struct SpriteData
@@ -30,105 +30,105 @@ SpriteList:
 ;;;;;
 :   .byte 7 ; tile count
 
-    .byte $80 ; tile
-    .byte 0*8 ; offset horizontal
     .byte 0*8 ; offset vertical
+    .byte $80 ; tile
     .byte Sp_Palette_0   ; palette & attr
+    .byte 0*8 ; offset horizontal
 
+    .byte 0*8
     .byte $81
-    .byte 1*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 1*8
 
+    .byte 0*8
     .byte $82
-    .byte 2*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 2*8
 
+    .byte 0*8
     .byte $83
+    .byte Sp_Palette_0
     .byte 3*8
-    .byte 0*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $90
+    .byte Sp_Palette_0
     .byte 0*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $91
-    .byte 1*8
-    .byte 1*8
     .byte Sp_Palette_0
+    .byte 1*8
 
-    .byte $92
-    .byte 2*8
     .byte 1*8
+    .byte $92
     .byte Sp_Palette_0
+    .byte 2*8
 
 ;;;;;
 :   .byte 13
 
+    .byte 0*8
     .byte $84
-    .byte 1*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 1*8
 
+    .byte 0*8
     .byte $85
-    .byte 2*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 2*8
 
+    .byte 0*8
     .byte $86
-    .byte 3*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 3*8
 
+    .byte 0*8
     .byte $87
-    .byte 4*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 4*8
 
+    .byte 0*8
     .byte $88
-    .byte 5*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 5*8
 
+    .byte 0*8
     .byte $89
-    .byte 6*8
-    .byte 0*8
     .byte Sp_Palette_0
+    .byte 6*8
 
+    .byte 1*8
     .byte $93
+    .byte Sp_Palette_0
     .byte 0*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $94
-    .byte 1*8
-    .byte 1*8
     .byte Sp_Palette_0
+    .byte 1*8
 
+    .byte 1*8
     .byte $95
+    .byte Sp_Palette_0
     .byte 2*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $96
+    .byte Sp_Palette_0
     .byte 3*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $97
+    .byte Sp_Palette_0
     .byte 4*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
+    .byte 1*8
     .byte $98
+    .byte Sp_Palette_0
     .byte 5*8
-    .byte 1*8
-    .byte Sp_Palette_0
 
-    .byte $99
-    .byte 6*8
     .byte 1*8
+    .byte $99
     .byte Sp_Palette_0
+    .byte 6*8
